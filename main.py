@@ -1,6 +1,9 @@
 
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType,StructField, StringType, IntegerType
+from utils.file_check import fetch_file_list_from_directory,last_processed_date
+from utils.data_quality_check import data_file_columns,expand_phone_numbers
+
 
 if __name__ == "__main__":
     print("Application Started ...")
@@ -21,13 +24,21 @@ if __name__ == "__main__":
         StructField("reviews_list", IntegerType(), True)
         ])
 
-    inputpath = "file:///C://Users//samme//Downloads//data_file_20210527182730.csv"
+
+    #inputpath = "file:///C://Users//samme//Downloads//data_file_20210527182730.csv"
     #inputpath = "C:\Users\samme\Downloads\Areas_in_blore.xlsx"
+    #inputpath = "input//data_file_20210527182730.csv"
+    landing_zone="input/"
 
-    raw_df = spark.read.option("header","true").csv(inputpath)
+    raw_df = fetch_file_list_from_directory(spark,landing_zone,last_processed_date())
+
+    trimed_df=raw_df.select(*data_file_columns())
 
 
-    raw_df.printSchema()
+    trimed_df.printSchema()
 
 
-    raw_df.show(2,False)
+    trimed_df.show(20,False)
+
+    df=expand_phone_numbers(trimed_df)
+
