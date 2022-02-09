@@ -26,7 +26,7 @@ def is_valid_values(input:DataFrame,master:DataFrame,colname:str):
 
 
 def validate_phone_numbers(input:DataFrame):
-    input.printSchema()
+    #input.printSchema()
     df2=input.withColumn("phone",regexp_replace(input.phone,'\\+91','')) \
         .withColumn("phone", regexp_replace(col('phone'), "[^0-9a-zA-Z]+", '')) \
         .withColumn("phone", regexp_replace(col('phone'), ' ', '')) \
@@ -63,7 +63,7 @@ def apply_dq_checks(input:DataFrame,spark:SparkSession):
     ##apply null checks for name,phone,location
     temp_df=is_not_null(input,'name',False)
     temp_df=is_not_null(temp_df,'phone')
-    temp_df=is_not_null(temp_df, 'name')
+    temp_df=is_not_null(temp_df, 'location')
     ##phone numbers validation to remove junk
     temp_df=validate_phone_numbers(temp_df)
     ## remove junk from address,, reviewlist
@@ -73,7 +73,6 @@ def apply_dq_checks(input:DataFrame,spark:SparkSession):
     aeras_master_df=spark.read.option("header","true").csv("lookup/Areas_in_blore.csv").withColumnRenamed("Area","location")  ## remove hard code
     temp_df=is_valid_values(temp_df,aeras_master_df,'location')
     temp_df=expand_phone_numbers(temp_df)
-    temp_df.show(10,False)
     return temp_df
 
 
