@@ -10,11 +10,15 @@ inmar_coding_test
 
 #correct output Schema
 ![img_2.png](img_2.png)
+
+
 #correct output Count
 21844
 
 #incorrect output Schema
 ![img_3.png](img_3.png)
+
+
 #incorrect output Count
 8971
 
