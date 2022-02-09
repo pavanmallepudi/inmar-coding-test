@@ -18,7 +18,5 @@ def main():
     write_incorrect_files(dq_check_df)
     extract_error_meta_data(dq_check_df)
 
-    meta_data=spark.read.parquet("output/incorrect_data_metadata")
-
 if __name__ == "__main__":
     main()
