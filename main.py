@@ -2,7 +2,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType,StructField, StringType, IntegerType
 from utils.file_check import fetch_file_list_from_directory,last_processed_date
-from utils.data_quality_check import data_file_columns,expand_phone_numbers
+from utils.data_quality_check import apply_dq_checks
 
 
 if __name__ == "__main__":
@@ -32,13 +32,21 @@ if __name__ == "__main__":
 
     raw_df = fetch_file_list_from_directory(spark,landing_zone,last_processed_date())
 
-    trimed_df=raw_df.select(*data_file_columns())
+    print(raw_df.count())
+
+    dq_check_df=apply_dq_checks(raw_df,spark)
+
+    dq_check_df.show(10,False)
+
+    print(dq_check_df.count())
+
+    #trimed_df=raw_df.select(*data_file_columns())
 
 
-    trimed_df.printSchema()
+    #trimed_df.printSchema()
 
 
-    trimed_df.show(20,False)
+    #trimed_df.show(20,False)
 
-    df=expand_phone_numbers(trimed_df)
+    #df=expand_phone_numbers(raw_df)
 
